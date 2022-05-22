@@ -4,6 +4,7 @@
 
 # Xcode
 #
+realm.json
 build/
 *.pbxuser
 !default.pbxuser
