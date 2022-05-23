@@ -106,7 +106,11 @@ function App() {
           ) : null}
         </View>
         <View>
-          {data && data.length > 0 ? (
+          {shouldAddLocation ? (
+            <View>
+              <Text>show form</Text>
+            </View>
+          ) : data && data.length > 0 ? (
             data.map((item, index) => {
               return (
                 <View key={index}>
@@ -117,12 +121,6 @@ function App() {
           ) : (
             <Text>No data</Text>
           )}
-          <Text></Text>
-        </View>
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>
-            Management application for CRUD operation. All rights are resevred
-          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
