@@ -36,7 +36,14 @@ let session = null;
 
 function App() {
   const [isSessionActive, setIsSessionActive] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([
+    {
+      _id: '6289ea9c80a7952fd9f8e05e',
+      business_id: 128,
+      name: 'Canara Bank ATM',
+      location: {coordinates: [12, 20], type: 'Point'},
+    },
+  ]);
   // set lang & lat
   const [lang, setLang] = useState(0);
   const [lat, setLat] = useState(0);
@@ -94,6 +101,16 @@ function App() {
               login
             </Button>
           ) : null}
+        </View>
+        <View>
+          {data.map(item => {
+            return (
+              <View>
+                <Text>Name:{item.name}</Text>
+              </View>
+            );
+          })}
+          <Text></Text>
         </View>
         <View style={styles.footer}>
           <Text style={styles.footerText}>
