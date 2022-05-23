@@ -9,10 +9,10 @@ import {
   InputAccessoryView,
 } from 'react-native';
 
-export const AddLocation = ({navigation, route}) => {
+export const AddLocation = ({submit}) => {
   const [business_id, setBusiness_id] = useState(null);
   const [name, setName] = useState('');
-  const [latlang] = useState('');
+  const [latlang, setLatLang] = useState('');
 
   return (
     <View style={styles.viewWrapper}>
@@ -26,6 +26,26 @@ export const AddLocation = ({navigation, route}) => {
           onChangeText={setName}
           value={name}
           placeholder={'Please type name or description '}
+        />
+        <TextInput
+          style={{
+            padding: 16,
+            marginTop: 50,
+          }}
+          inputAccessoryViewID={inputAccessoryViewID}
+          onChangeText={setBusiness_id}
+          value={business_id}
+          placeholder={'Please type unique id '}
+        />
+        <TextInput
+          style={{
+            padding: 16,
+            marginTop: 50,
+          }}
+          inputAccessoryViewID={inputAccessoryViewID}
+          onChangeText={set}
+          value={setLatLang}
+          placeholder={'lat,lang'}
         />
         <Button
           title="Submit"
