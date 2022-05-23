@@ -34,7 +34,7 @@ export interface Location {
 // }
 
 export interface Ambulence {
-  _id: string;
+  _id?: string;
   business_id: number;
   name: string;
   location: Location;
