@@ -103,13 +103,17 @@ function App() {
           ) : null}
         </View>
         <View>
-          {data.map(item => {
-            return (
-              <View>
-                <Text>Name:{item.name}</Text>
-              </View>
-            );
-          })}
+          {data && data.length > 0 ? (
+            data.map((item, index) => {
+              return (
+                <View>
+                  <Text key={index}>Name:{item.name}</Text>
+                </View>
+              );
+            })
+          ) : (
+            <Text>No data</Text>
+          )}
           <Text></Text>
         </View>
         <View style={styles.footer}>
