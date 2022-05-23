@@ -20,9 +20,6 @@ import {
 } from 'react-native';
 import Realm from 'realm';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {LogoutButton} from './LogoutButton';
-import {WelcomeView} from './WelcomeView';
-import {TasksView} from './TasksView';
 
 async function anonymousLogin() {
   let user;
