@@ -20,7 +20,7 @@ import {
 } from 'react-native';
 import Realm from 'realm';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-
+import {AddLocation} from './froms/AddLocation';
 async function anonymousLogin() {
   let user;
   try {
@@ -109,6 +109,11 @@ function App() {
           {shouldAddLocation ? (
             <View>
               <Text>show form</Text>
+              <AddLocation
+                submit={(business_id, name, latlang) => {
+                  console.log(business_id, name, latlang);
+                }}
+              />
             </View>
           ) : data && data.length > 0 ? (
             data.map((item, index) => {
