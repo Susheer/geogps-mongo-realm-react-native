@@ -1,13 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  Button,
-  Alert,
-  TextInput,
-  InputAccessoryView,
-} from 'react-native';
+import {Text, View, StyleSheet, Button, Alert, TextInput} from 'react-native';
 
 export const AddLocation = ({submit}) => {
   const [business_id, setBusiness_id] = useState(null);
@@ -22,7 +14,6 @@ export const AddLocation = ({submit}) => {
             padding: 16,
             marginTop: 50,
           }}
-          inputAccessoryViewID={inputAccessoryViewID}
           onChangeText={setName}
           value={name}
           placeholder={'Please type name or description '}
@@ -32,7 +23,6 @@ export const AddLocation = ({submit}) => {
             padding: 16,
             marginTop: 50,
           }}
-          inputAccessoryViewID={inputAccessoryViewID}
           onChangeText={setBusiness_id}
           value={business_id}
           placeholder={'Please type unique id '}
@@ -42,8 +32,7 @@ export const AddLocation = ({submit}) => {
             padding: 16,
             marginTop: 50,
           }}
-          inputAccessoryViewID={inputAccessoryViewID}
-          onChangeText={set}
+          onChangeText={setLatLang}
           value={setLatLang}
           placeholder={'lat,lang'}
         />
