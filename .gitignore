@@ -3,7 +3,6 @@
 .DS_Store
 
 # Xcode
-#
 realm.json
 build/
 *.pbxuser
@@ -26,6 +25,7 @@ DerivedData
 #
 build/
 .idea
+.env
 .gradle
 local.properties
 *.iml
