@@ -112,6 +112,7 @@ function App() {
               <AddLocation
                 submit={(business_id, name, latlang) => {
                   console.log(business_id, name, latlang);
+                  setShouldAddLocation(false);
                 }}
               />
             </View>
