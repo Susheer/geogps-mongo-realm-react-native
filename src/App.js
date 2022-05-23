@@ -87,27 +87,26 @@ function App() {
             <Button
               title="Search Within"
               onPress={() => {
-                console.log('User user', user);
-                user.functions
-                  .searchWithin(100, [12.8687464, 77.5652512])
+                console.log('Invoked');
+                session.functions
+                  .searchWithin(300, [12.8687464, 77.5652512])
                   .then(data => {
                     setData(data);
                   })
                   .catch(error => {
                     // try again
-                    console.error(error);
+                    console.log('error', error);
                   });
-              }}>
-              login
-            </Button>
+              }}
+            />
           ) : null}
         </View>
         <View>
           {data && data.length > 0 ? (
             data.map((item, index) => {
               return (
-                <View>
-                  <Text key={index}>Name:{item.name}</Text>
+                <View key={index}>
+                  <Text>{item.name}</Text>
                 </View>
               );
             })
