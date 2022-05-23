@@ -36,14 +36,7 @@ let session = null;
 
 function App() {
   const [isSessionActive, setIsSessionActive] = useState(false);
-  const [data, setData] = useState([
-    {
-      _id: '6289ea9c80a7952fd9f8e05e',
-      business_id: 128,
-      name: 'Canara Bank ATM',
-      location: {coordinates: [12, 20], type: 'Point'},
-    },
-  ]);
+  const [data, setData] = useState([]);
   // set lang & lat
   const [lang, setLang] = useState(0);
   const [lat, setLat] = useState(0);
