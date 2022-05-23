@@ -41,6 +41,9 @@ function App() {
   const [lang, setLang] = useState(0);
   const [lat, setLat] = useState(0);
 
+  // local flags
+  const [shouldAddLocation, setShouldAddLocation] = useState(0);
+
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -59,20 +62,28 @@ function App() {
         style={backgroundStyle}>
         <View style={{marginVertical: 10}}>
           {!isSessionActive ? (
-            <Button
-              title="Init Application"
-              onPress={() => {
-                anonymousLogin()
-                  .then(user => {
-                    session = user;
-                    setIsSessionActive(true);
-                  })
-                  .catch(err => {
-                    setIsSessionActive(false);
-                    console.log('User error', err);
-                  });
-              }}
-            />
+            <View>
+              <Button
+                title="Init Application"
+                onPress={() => {
+                  anonymousLogin()
+                    .then(user => {
+                      session = user;
+                      setIsSessionActive(true);
+                    })
+                    .catch(err => {
+                      setIsSessionActive(false);
+                      console.log('User error', err);
+                    });
+                }}
+              />
+              <Button
+                title="Add Location"
+                onPress={() => {
+                  setShouldAddLocation(true);
+                }}
+              />
+            </View>
           ) : null}
         </View>
         <View style={{marginBottom: 12}}>
