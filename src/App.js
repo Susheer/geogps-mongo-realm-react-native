@@ -21,7 +21,6 @@ import {
   Button,
 } from 'react-native';
 import Realm from 'realm';
-import {t} from 'react-native-tailwindcss';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {AddLocation} from './froms/AddLocation';
 async function anonymousLogin() {
@@ -46,8 +45,10 @@ function App() {
   // local flags
   const [shouldAddLocation, setShouldAddLocation] = useState(0);
 
-  // erros
+  // erros   setInvalidCoordinate('Invalid coordinates');
   const [errors, setErrors] = useState([]);
+  const [invalidCoordinate, setInvalidCoordinate] = useState('');
+  const [loadingList, setLoadingList] = useState(false);
 
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
@@ -106,26 +107,44 @@ function App() {
                   minWidth: 100,
                   flex: 1,
                 }}
-                onChangeText={setLatLang}
+                onChangeText={text => {
+                  setLatLang(text);
+                  setInvalidCoordinate('');
+                }}
                 value={latlang}
                 placeholder={'lat,lang'}
               />
 
-              <Button
-                title="Search"
-                onPress={() => {
-                  session &&
-                    session.functions
-                      .searchWithin(300, [12.8687464, 77.5652512])
-                      .then(data => {
-                        setData(data);
-                      })
-                      .catch(error => {
-                        // try again
-                        console.log('error', error);
-                      });
-                }}
-              />
+              {!loadingList && (
+                <Button
+                  title="Search"
+                  onPress={() => {
+                    let coordinates = isValidateLatlang(latlang);
+                    if (coordinates) {
+                      setLoadingList(true);
+                      session &&
+                        session.functions
+                          .searchWithin(300, coordinates)
+                          .then(data => {
+                            //[12.8687464, 77.5652512]
+                            setData(data);
+                            setLoadingList(false);
+                          })
+                          .catch(error => {
+                            setLoadingList(false);
+                            // try again
+                            console.log('coordinates', [
+                              Number(coordinates[0]),
+                              Number(coordinates[1]),
+                            ]);
+                            error && setInvalidCoordinate(error.message);
+                          });
+                    } else {
+                      setInvalidCoordinate('Invalid coordinates');
+                    }
+                  }}
+                />
+              )}
 
               {!shouldAddLocation && (
                 <Button
@@ -182,24 +201,17 @@ function App() {
                 </View>
               );
             })
+          ) : isSessionActive && loadingList ? (
+            <Text>Loading</Text>
           ) : (
-            isSessionActive && <Text>No data</Text>
+            <Text>No data</Text>
           )}
         </View>
+        <Text style={{color: 'red'}}>{invalidCoordinate}</Text>
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  footerText: {
-    fontSize: 10,
-    textAlign: 'center',
-  },
-  footer: {
-    margin: 40,
-  },
-});
 
 export default App;
 
@@ -246,4 +258,19 @@ function validateLocation(latlang, name, business_id) {
     msg.push('It should be lat,lang');
   }
   return msg;
+}
+
+function isValidateLatlang(latlang) {
+  let arr = [];
+  let lat, lang;
+  arr = latlang ? latlang.split(',') : [];
+  if (arr && arr.length === 2) {
+    lang = Number(arr[1].trim());
+    lat = Number(arr[0].trim());
+    if (lang >= -180 && lang <= 180 && lat >= -90 && lat <= 90) {
+      return [lat, lang];
+    }
+    return null;
+  }
+  return null;
 }
