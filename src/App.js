@@ -77,12 +77,14 @@ function App() {
                     });
                 }}
               />
-              <Button
-                title="Add Location"
-                onPress={() => {
-                  setShouldAddLocation(true);
-                }}
-              />
+              {!shouldAddLocation && (
+                <Button
+                  title="Add Location"
+                  onPress={() => {
+                    setShouldAddLocation(true);
+                  }}
+                />
+              )}
             </View>
           ) : null}
         </View>
@@ -108,11 +110,12 @@ function App() {
         <View>
           {shouldAddLocation ? (
             <View>
-              <Text>show form</Text>
               <AddLocation
+                onClose={() => {
+                  setShouldAddLocation(false);
+                }}
                 submit={(business_id, name, latlang) => {
                   console.log(business_id, name, latlang);
-                  setShouldAddLocation(false);
                 }}
               />
             </View>
