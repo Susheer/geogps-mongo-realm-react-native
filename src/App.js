@@ -16,6 +16,7 @@ import {
   useColorScheme,
   View,
   Appearance,
+  Dimensions,
   TextInput,
   Button,
 } from 'react-native';
@@ -65,10 +66,18 @@ function App() {
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
         <View style={{marginVertical: 10}}>
-          {isSessionActive ? (
-            <View>
+          {!isSessionActive ? (
+            <View
+              style={{
+                flex: 1,
+                height: Dimensions.get('window').height,
+                width: Dimensions.get('window').width,
+                padding: 50,
+                justifyContent: 'center',
+                alignContent: 'center',
+              }}>
               <Button
-                title="Init Application"
+                title="Connect"
                 onPress={() => {
                   anonymousLogin()
                     .then(user => {
@@ -165,7 +174,7 @@ function App() {
                 })}
               </View>
             </View>
-          ) : data && data.length > 0 ? (
+          ) : isSessionActive && data && data.length > 0 ? (
             data.map((item, index) => {
               return (
                 <View key={index}>
@@ -174,7 +183,7 @@ function App() {
               );
             })
           ) : (
-            <Text>No data</Text>
+            isSessionActive && <Text>No data</Text>
           )}
         </View>
       </ScrollView>
