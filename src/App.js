@@ -20,6 +20,7 @@ import {
   TextInput,
   Button,
 } from 'react-native';
+import {Ambulence, Location} from './models/Ambulence';
 import Realm from 'realm';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {AddLocation} from './froms/AddLocation';
@@ -173,7 +174,20 @@ function App() {
                     console.log(errorsList);
                     setErrors(errorsList);
                   } else {
-                    setErrors([]);
+                    let coordinates = isValidateLatlang(latlang);
+                    session.functions
+                      .addLocation(
+                        coordinates,
+                        Number(business_id.trim()),
+                        name.trim(),
+                      )
+                      .then(data => {
+                        //[12.8687464, 77.5652512]
+                        console.log('Added', data);
+                      })
+                      .catch(error => {
+                        console.log('error', error);
+                      });
                   }
                 }}
               />
@@ -240,8 +254,8 @@ function validateLocation(latlang, name, business_id) {
 
   let arr = latlang.split(',');
   if (arr && arr.length === 2) {
-    lang = arr[1];
-    lat = arr[0];
+    lang = Number(arr[1].trim());
+    lat = Number(arr[0].trim());
     let isValid = false;
     if (lang >= -180 && lang <= 180) {
       isValid = true;
