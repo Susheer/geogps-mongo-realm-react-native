@@ -8,36 +8,56 @@ export const AddLocation = ({submit, onClose}) => {
 
   return (
     <View style={styles.viewWrapper}>
-      <TextInput
-        style={{
-          padding: 16,
-        }}
-        onChangeText={setLatLang}
-        value={setLatLang}
-        placeholder={'lat,lang'}
-      />
+      <View style={{flex: 1}}>
+        <TextInput
+          style={{
+            borderStyle: 'solid',
+            borderWidth: 0.5,
+            marginTop: 5,
+          }}
+          onChangeText={setLatLang}
+          value={latlang}
+          placeholder={'lat,lang'}
+        />
+        <TextInput
+          style={{
+            borderStyle: 'solid',
+            borderWidth: 0.5,
+            marginTop: 5,
+          }}
+          onChangeText={setBusiness_id}
+          value={business_id}
+          placeholder={'Please type unique id '}
+        />
+        <TextInput
+          style={{
+            borderStyle: 'solid',
+            borderWidth: 0.5,
+            marginTop: 5,
+          }}
+          onChangeText={setName}
+          value={name}
+          placeholder={'Please type name or description '}
+        />
+      </View>
 
-      <TextInput
+      <View
         style={{
-          padding: 16,
-        }}
-        onChangeText={setBusiness_id}
-        value={business_id}
-        placeholder={'Please type unique id '}
-      />
-      <TextInput
-        style={{
-          padding: 16,
-        }}
-        onChangeText={setName}
-        value={name}
-        placeholder={'Please type name or description '}
-      />
-      <Button onPress={onClose} title="Close" />
-      <Button
-        title="Submit"
-        onPress={() => submit(business_id, name, latlang)}
-      />
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          marginVertical: 10,
+        }}>
+        <View style={{margin: 5}}>
+          <Button onPress={onClose} title="Close" />
+        </View>
+        <View style={{margin: 5}}>
+          <Button
+            title="Submit"
+            onPress={() => submit(business_id, name, latlang)}
+          />
+        </View>
+      </View>
     </View>
   );
 };
@@ -45,7 +65,6 @@ export const AddLocation = ({submit, onClose}) => {
 const styles = StyleSheet.create({
   viewWrapper: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginHorizontal: 12,
   },
 });

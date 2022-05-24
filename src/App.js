@@ -16,9 +16,11 @@ import {
   useColorScheme,
   View,
   Appearance,
+  TextInput,
   Button,
 } from 'react-native';
 import Realm from 'realm';
+import {t} from 'react-native-tailwindcss';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {AddLocation} from './froms/AddLocation';
 async function anonymousLogin() {
@@ -37,12 +39,14 @@ let session = null;
 function App() {
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [data, setData] = useState([]);
-  // set lang & lat
-  const [lang, setLang] = useState(0);
-  const [lat, setLat] = useState(0);
+  // set lang,lat
+  const [latlang, setLatLang] = useState('');
 
   // local flags
   const [shouldAddLocation, setShouldAddLocation] = useState(0);
+
+  // erros
+  const [errors, setErrors] = useState([]);
 
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
@@ -61,7 +65,7 @@ function App() {
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
         <View style={{marginVertical: 10}}>
-          {!isSessionActive ? (
+          {isSessionActive ? (
             <View>
               <Button
                 title="Init Application"
@@ -77,9 +81,46 @@ function App() {
                     });
                 }}
               />
+            </View>
+          ) : !shouldAddLocation ? (
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                borderStyle: 'solid',
+                borderWidth: 1,
+                borderColor: 'gray',
+                marginVertical: 10,
+              }}>
+              <TextInput
+                style={{
+                  minWidth: 100,
+                  flex: 1,
+                }}
+                onChangeText={setLatLang}
+                value={latlang}
+                placeholder={'lat,lang'}
+              />
+
+              <Button
+                title="Search"
+                onPress={() => {
+                  session &&
+                    session.functions
+                      .searchWithin(300, [12.8687464, 77.5652512])
+                      .then(data => {
+                        setData(data);
+                      })
+                      .catch(error => {
+                        // try again
+                        console.log('error', error);
+                      });
+                }}
+              />
+
               {!shouldAddLocation && (
                 <Button
-                  title="Add Location"
+                  title="Add"
                   onPress={() => {
                     setShouldAddLocation(true);
                   }}
@@ -88,25 +129,7 @@ function App() {
             </View>
           ) : null}
         </View>
-        <View style={{marginBottom: 12}}>
-          {isSessionActive ? (
-            <Button
-              title="Search Within"
-              onPress={() => {
-                console.log('Invoked');
-                session.functions
-                  .searchWithin(300, [12.8687464, 77.5652512])
-                  .then(data => {
-                    setData(data);
-                  })
-                  .catch(error => {
-                    // try again
-                    console.log('error', error);
-                  });
-              }}
-            />
-          ) : null}
-        </View>
+
         <View>
           {shouldAddLocation ? (
             <View>
@@ -116,8 +139,31 @@ function App() {
                 }}
                 submit={(business_id, name, latlang) => {
                   console.log(business_id, name, latlang);
+                  let errorsList = validateLocation(latlang, name, business_id);
+
+                  if (errorsList && errorsList.length) {
+                    console.log(errorsList);
+                    setErrors(errorsList);
+                  } else {
+                    setErrors([]);
+                  }
                 }}
               />
+              <View
+                style={{
+                  flex: 1,
+                  marginHorizontal: 50,
+                  justifyContent: 'center',
+                  alignItems: 'flex-start',
+                }}>
+                {errors.map((el, index) => {
+                  return (
+                    <Text key={index} style={{color: 'red'}}>
+                      {el}
+                    </Text>
+                  );
+                })}
+              </View>
             </View>
           ) : data && data.length > 0 ? (
             data.map((item, index) => {
@@ -155,4 +201,40 @@ export function getRealmApp() {
     timeout: 10000,
   };
   return new Realm.App(appConfig);
+}
+
+function validateLocation(latlang, name, business_id) {
+  let msg = [];
+  let lat, lang;
+  if (!latlang) {
+    msg.push('Fill lat,lang values ');
+  }
+  if (!name) {
+    msg.push('Fill name details');
+  }
+  if (!business_id || business_id <= 0) {
+    msg.push('Fill businnes  details');
+  }
+  if (msg.length) return msg;
+
+  let arr = latlang.split(',');
+  if (arr && arr.length === 2) {
+    lang = arr[1];
+    lat = arr[0];
+    let isValid = false;
+    if (lang >= -180 && lang <= 180) {
+      isValid = true;
+    } else {
+      msg.push('Valid longitude values are between -180 and 180');
+    }
+    if (lat >= -90 && lat <= 90) {
+      isValid = true;
+    } else {
+      msg.push('Valid latitude values are between -90 and 90');
+    }
+  } else {
+    msg.push('Oos ! Entered lat and lang values are not in correct format');
+    msg.push('It should be lat,lang');
+  }
+  return msg;
 }
