@@ -249,7 +249,7 @@ export function getRealmApp() {
   const appId = APP_ID; // Set Realm app ID here.
   const appConfig = {
     id: appId,
-    timeout: Timeout,
+    timeout: Number(Timeout),
   };
   return new Realm.App(appConfig);
 }
