@@ -20,6 +20,7 @@ import {
   TextInput,
   Button,
 } from 'react-native';
+import {APP_ID, Timeout} from '@env';
 import {Ambulence, Location} from './models/Ambulence';
 import Realm from 'realm';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -245,10 +246,10 @@ function App() {
 export default App;
 
 export function getRealmApp() {
-  const appId = 'mgmt-app-zhhip'; // Set Realm app ID here.
+  const appId = APP_ID; // Set Realm app ID here.
   const appConfig = {
     id: appId,
-    timeout: 10000,
+    timeout: Timeout,
   };
   return new Realm.App(appConfig);
 }
