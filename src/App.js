@@ -49,6 +49,7 @@ function App() {
   // erros   setInvalidCoordinate('Invalid coordinates');
   const [errors, setErrors] = useState([]);
   const [invalidCoordinate, setInvalidCoordinate] = useState('');
+  const [approximity, setApproximity] = useState(300);
   const [loadingList, setLoadingList] = useState(false);
 
   const isDarkMode = useColorScheme() === 'dark';
@@ -94,67 +95,80 @@ function App() {
               />
             </View>
           ) : !shouldAddLocation ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                borderStyle: 'solid',
-                borderWidth: 1,
-                borderColor: 'gray',
-                marginVertical: 10,
-              }}>
+            <View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  borderStyle: 'solid',
+                  borderWidth: 1,
+                  borderColor: 'gray',
+                  marginVertical: 10,
+                }}>
+                <TextInput
+                  style={{
+                    minWidth: 100,
+                    flex: 1,
+                  }}
+                  onChangeText={text => {
+                    setLatLang(text);
+                    setInvalidCoordinate('');
+                  }}
+                  value={latlang}
+                  placeholder={'lat,lang'}
+                />
+                {!loadingList && (
+                  <Button
+                    title="Search"
+                    onPress={() => {
+                      let coordinates = isValidateLatlang(latlang);
+                      if (coordinates) {
+                        setLoadingList(true);
+                        session &&
+                          session.functions
+                            .searchWithin(Number(approximity), coordinates)
+                            .then(data => {
+                              //[12.8687464, 77.5652512]
+                              setData(data);
+                              setLoadingList(false);
+                            })
+                            .catch(error => {
+                              setLoadingList(false);
+                              // try again
+                              console.log('coordinates', [
+                                Number(coordinates[0]),
+                                Number(coordinates[1]),
+                              ]);
+                              error && setInvalidCoordinate(error.message);
+                            });
+                      } else {
+                        setInvalidCoordinate('Invalid coordinates');
+                      }
+                    }}
+                  />
+                )}
+
+                {!shouldAddLocation && (
+                  <Button
+                    title="Add"
+                    onPress={() => {
+                      setShouldAddLocation(true);
+                    }}
+                  />
+                )}
+              </View>
+              <Text>Search within meaters</Text>
               <TextInput
+                keyboardType="numeric"
                 style={{
                   minWidth: 100,
                   flex: 1,
                 }}
                 onChangeText={text => {
-                  setLatLang(text);
-                  setInvalidCoordinate('');
+                  setApproximity(parseInt(Number(text)) + '');
                 }}
-                value={latlang}
-                placeholder={'lat,lang'}
+                value={approximity + ''}
               />
-
-              {!loadingList && (
-                <Button
-                  title="Search"
-                  onPress={() => {
-                    let coordinates = isValidateLatlang(latlang);
-                    if (coordinates) {
-                      setLoadingList(true);
-                      session &&
-                        session.functions
-                          .searchWithin(300, coordinates)
-                          .then(data => {
-                            //[12.8687464, 77.5652512]
-                            setData(data);
-                            setLoadingList(false);
-                          })
-                          .catch(error => {
-                            setLoadingList(false);
-                            // try again
-                            console.log('coordinates', [
-                              Number(coordinates[0]),
-                              Number(coordinates[1]),
-                            ]);
-                            error && setInvalidCoordinate(error.message);
-                          });
-                    } else {
-                      setInvalidCoordinate('Invalid coordinates');
-                    }
-                  }}
-                />
-              )}
-
-              {!shouldAddLocation && (
-                <Button
-                  title="Add"
-                  onPress={() => {
-                    setShouldAddLocation(true);
-                  }}
-                />
-              )}
             </View>
           ) : null}
         </View>
@@ -221,6 +235,7 @@ function App() {
             <Text>No data</Text>
           )}
         </View>
+        <Text>searchWithin {approximity} meaters</Text>
         <Text style={{color: 'red'}}>{invalidCoordinate}</Text>
       </ScrollView>
     </SafeAreaView>
