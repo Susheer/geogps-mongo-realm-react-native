@@ -21,7 +21,6 @@ import {
   Button,
 } from 'react-native';
 import {APP_ID, Timeout} from '@env';
-import {Ambulence, Location} from './models/Ambulence';
 import Realm from 'realm';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {AddLocation} from './froms/AddLocation';
